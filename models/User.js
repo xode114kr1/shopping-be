@@ -22,5 +22,5 @@ userSchema.methods.toJSON = function () {
   return obj;
 };
 
-const user = mongoose.model("User", userSchema); // userSchema를 모델로 추출
-module.exports = user;
+const User = mongoose.model("User", userSchema); // userSchema를 모델로 추출
+module.exports = User;
