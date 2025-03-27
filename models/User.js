@@ -1,4 +1,9 @@
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+
+require("dotenv").config();
+const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+
 const Schema = mongoose.Schema;
 
 const userSchema = Schema(
@@ -17,9 +22,16 @@ userSchema.methods.toJSON = function () {
   const obj = this._doc;
   delete obj.password;
   delete obj.__v;
-  delete obj.updateAt;
-  delete obj.createAt;
+  delete obj.updatedAt;
+  delete obj.createdAt;
   return obj;
+};
+
+userSchema.methods.generateToken = async function () {
+  const token = jwt.sign({ _id: this._id }, JWT_SECRET_KEY, {
+    expiresIn: "1d",
+  });
+  return token;
 };
 
 const User = mongoose.model("User", userSchema); // userSchema를 모델로 추출
