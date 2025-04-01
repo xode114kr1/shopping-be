@@ -27,7 +27,21 @@ productController.createProduct = async (req, res) => {
       status,
     });
     await product.save();
-    res.status(200).json("success", product);
+    res.status(200).json({ status: "success", product });
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
+productController.getProducts = async (req, res) => {
+  try {
+    const { page, name } = req.query;
+    const cond = name ? { name: { $regex: name, $options: "i" } } : {};
+    let query = Product.find(cond);
+
+    const productList = await query.exec();
+
+    res.status(200).json({ status: "success", data: productList });
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
   }
