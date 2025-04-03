@@ -50,6 +50,17 @@ productController.getProducts = async (req, res) => {
   }
 };
 
+productController.getProductById = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const product = await Product.findById(productId);
+    if (!product) throw new Error("fail find product");
+    res.status(200).json({ status: "success", data: product });
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
 productController.updateProducts = async (req, res) => {
   try {
     const productId = req.params.id;
