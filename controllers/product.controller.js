@@ -28,7 +28,9 @@ productController.createProduct = async (req, res) => {
 productController.getProducts = async (req, res) => {
   try {
     const { page, name } = req.query;
-    const cond = name ? { name: { $regex: name, $options: "i" } } : {};
+    const cond = name
+      ? { name: { $regex: name, $options: "i" }, isDeleted: false }
+      : { isDeleted: false };
     let query = Product.find(cond);
     let response = { status: "success" };
 
@@ -68,6 +70,21 @@ productController.updateProducts = async (req, res) => {
       { new: true }
     );
     if (!product) throw new Error("item doesn't exist");
+    res.status(200).json({ status: "success", data: product });
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
+productController.deleteProducts = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const product = await Product.findByIdAndUpdate(
+      productId,
+      { isDeleted: true },
+      { new: true }
+    );
+    if (!product) throw new Error("fail delect Product");
     res.status(200).json({ status: "success", data: product });
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
