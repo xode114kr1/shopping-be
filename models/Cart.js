@@ -18,7 +18,7 @@ const cartSchema = Schema(
   { timestamps: true }
 );
 
-userSchema.methods.toJSON = function () {
+cartSchema.methods.toJSON = function () {
   // userSchema를 프론트로 보낼 때 데이터를 필터함
   const obj = this._doc;
   delete obj.__v;
@@ -27,5 +27,5 @@ userSchema.methods.toJSON = function () {
   return obj;
 };
 
-const Cart = mongoose.model("Cart", userSchema); // userSchema를 모델로 추출
+const Cart = mongoose.model("Cart", cartSchema); // userSchema를 모델로 추출
 module.exports = Cart;
