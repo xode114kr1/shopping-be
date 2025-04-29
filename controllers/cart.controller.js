@@ -49,4 +49,29 @@ cartController.getCart = async (req, res) => {
   }
 };
 
+cartController.deleteItemToCart = async (req, res) => {
+  try {
+    const { userId } = req;
+    const id = req.params.id;
+    let cart = await Cart.findOne({ userId }).populate({
+      path: "items",
+      populate: {
+        path: "productId",
+        model: "Product",
+      },
+    });
+    if (!cart) {
+      return res
+        .status(404)
+        .json({ status: "fail", message: "Cart not found" });
+    }
+    cart.items = cart.items.filter((item) => !item._id.equals(id));
+    await cart.save();
+
+    res.status(200).json({ status: "success", data: cart.items });
+  } catch (error) {
+    res.state(400).json({ status: "fail", error: error.message });
+  }
+};
+
 module.exports = cartController;
