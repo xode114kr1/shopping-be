@@ -104,4 +104,19 @@ cartController.updateItemQtyInCart = async (req, res) => {
     res.status(400).json({ status: "fail", error: error.message });
   }
 };
+
+cartController.getQty = async (req, res) => {
+  try {
+    const { userId } = req;
+    const cart = await Cart.findOne({ userId });
+    if (!cart) {
+      res.status(404).json({ status: "fail", error: "Cart not found" });
+    }
+
+    const qty = cart.items.length;
+    res.status(200).json({ status: "succuss", data: qty });
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
+  }
+};
 module.exports = cartController;

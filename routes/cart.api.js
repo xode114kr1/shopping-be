@@ -15,4 +15,5 @@ router.post(
   authController.authenticate,
   cartController.updateItemQtyInCart
 );
+router.get("/qty", authController.authenticate, cartController.getQty);
 module.exports = router;
