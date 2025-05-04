@@ -4,5 +4,11 @@ const orderController = require("../controllers/order.controller");
 const router = express.Router();
 
 router.post("/", autoController.authenticate, orderController.createOrder);
-
+router.get("/me", autoController.authenticate, orderController.getOrder);
+router.get(
+  "/",
+  autoController.authenticate,
+  autoController.checkAdminPermission,
+  orderController.getOrderList
+);
 module.exports = router;

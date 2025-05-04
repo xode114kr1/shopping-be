@@ -37,4 +37,24 @@ orderController.createOrder = async (req, res) => {
   }
 };
 
+orderController.getOrder = async (req, res) => {
+  try {
+    const { userId } = req;
+    const order = await Order.find({ userId }).populate("items.productId");
+    console.log(order);
+    res.status(200).json({ status: "succes", orderList: order });
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
+orderController.getOrderList = async (req, res) => {
+  try {
+    const order = await Order.find().populate("items.productId");
+    res.status(200).json({ status: "succes", orderList: order });
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
 module.exports = orderController;
