@@ -102,4 +102,57 @@ productController.deleteProducts = async (req, res) => {
   }
 };
 
+const groupByProductId = (itemList) => {
+  const grouped = {};
+  for (const item of itemList) {
+    const pid = item.productId;
+    if (!grouped[pid]) grouped[pid] = [];
+    grouped[pid].push(item);
+  }
+  return grouped;
+};
+
+productController.checkItemListStock = async (itemList) => {
+  const insufficientStockItems = [];
+  const groupedItems = groupByProductId(itemList);
+
+  for (const productId in groupedItems) {
+    const items = groupedItems[productId];
+    const product = await Product.findById(productId);
+    if (!product) {
+      insufficientStockItems.push({
+        item: { productId },
+        message: "상품이 존재하지 않습니다",
+      });
+      continue;
+    }
+
+    const newStock = { ...product.stock };
+    for (const item of items) {
+      const size = item.size;
+      const qty = item.qty;
+
+      if (!newStock[size] || newStock[size] < qty) {
+        insufficientStockItems.push({
+          item,
+          message: `${product.name}의 ${size} 재고가 부족합니다`,
+        });
+        continue;
+      }
+      newStock[size] -= qty;
+    }
+
+    if (
+      !insufficientStockItems.some(
+        (entry) => entry.item.productId === productId
+      )
+    ) {
+      product.stock = newStock;
+      await product.save();
+    }
+  }
+
+  return insufficientStockItems;
+};
+
 module.exports = productController;
