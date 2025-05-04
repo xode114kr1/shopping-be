@@ -110,7 +110,7 @@ cartController.getQty = async (req, res) => {
     const { userId } = req;
     const cart = await Cart.findOne({ userId });
     if (!cart) {
-      res.status(404).json({ status: "fail", error: "Cart not found" });
+      return res.status(404).json({ status: "fail", error: "Cart not found" });
     }
 
     const qty = cart.items.length;
