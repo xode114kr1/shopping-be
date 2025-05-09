@@ -140,6 +140,7 @@ productController.checkItemListStock = async (itemList) => {
         continue;
       }
       newStock[size] -= qty;
+      product.soldCount += qty;
     }
 
     if (
@@ -153,6 +154,18 @@ productController.checkItemListStock = async (itemList) => {
   }
 
   return insufficientStockItems;
+};
+
+productController.getPopularProducts = async (req, res) => {
+  try {
+    const productList = await Product.find({ isDeleted: false })
+      .sort({ soldCount: -1 })
+      .limit(10);
+    if (!productList) throw new Error("fail find product");
+    res.status(200).json({ status: "success", data: productList });
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
+  }
 };
 
 module.exports = productController;

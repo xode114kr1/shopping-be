@@ -43,7 +43,6 @@ orderController.getOrder = async (req, res) => {
   try {
     const { userId } = req;
     const order = await Order.find({ userId }).populate("items.productId");
-    console.log(order);
     res.status(200).json({ status: "succes", orderList: order });
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
@@ -59,7 +58,7 @@ orderController.getOrderList = async (req, res) => {
       ? { orderNum: { $regex: ordernum, $options: "i" } }
       : {};
 
-    let query = Order.find(cond).populate("items.productId");
+    let query = Order.find(cond).populate("items.productId").populate("userId");
     const response = { status: "success" };
 
     // 페이지네이션 처리

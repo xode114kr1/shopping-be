@@ -13,6 +13,7 @@ const ProductSchema = Schema(
     stock: { type: Object, require: true },
     status: { type: String, default: "active" },
     isDeleted: { type: Boolean, default: false },
+    soldCount: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
