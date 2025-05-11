@@ -11,8 +11,8 @@ router.post(
 );
 
 router.get("/", productController.getProducts);
-router.get("/:id", productController.getProductById);
 router.get("/popular", productController.getPopularProducts);
+router.get("/:id", productController.getProductById);
 
 router.put(
   "/:id",
