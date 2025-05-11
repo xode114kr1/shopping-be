@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const SummarySchema = Schema({
-  totalOrders: { type: Number, default: 0, required: true },
-  totalRevenue: { type: Number, default: 0, required: true },
-  totalUnitsSold: { type: Number, default: 0, required: true },
+  totalOrders: { type: Number, default: 0 },
+  totalRevenue: { type: Number, default: 0 },
+  totalUnitsSold: { type: Number, default: 0 },
   averageOrderValue: { type: Number, default: 0 },
 });
 

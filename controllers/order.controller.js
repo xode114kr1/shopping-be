@@ -1,4 +1,5 @@
 const Order = require("../models/Order");
+const { updateSummary } = require("../services/summaryService");
 const { randomStringGenerator } = require("../utils/randomStringGenerator");
 const productController = require("./product.controller");
 
@@ -33,6 +34,9 @@ orderController.createOrder = async (req, res) => {
     });
 
     await newOrder.save();
+
+    await updateSummary({ totalPrice, orderList });
+
     res.status(200).json({ status: "success", orderNum: newOrder.orderNum });
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
