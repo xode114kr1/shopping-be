@@ -5,9 +5,17 @@ const PAGE_SIZE = 5;
 
 productController.createProduct = async (req, res) => {
   try {
-    const { sku, name, image, category, description, stock, price, status } =
-      req.body;
-    console.log(req.body);
+    const {
+      sku,
+      name,
+      image,
+      category,
+      description,
+      stock,
+      price,
+      status,
+      tag,
+    } = req.body;
     const product = new Product({
       sku,
       name,
@@ -17,6 +25,7 @@ productController.createProduct = async (req, res) => {
       stock,
       price,
       status,
+      tag,
     });
     await product.save();
     res.status(200).json({ status: "success", product });
@@ -27,10 +36,18 @@ productController.createProduct = async (req, res) => {
 
 productController.getProducts = async (req, res) => {
   try {
-    const { page, name } = req.query;
-    const cond = name
-      ? { name: { $regex: name, $options: "i" }, isDeleted: false }
-      : { isDeleted: false };
+    const { page, name, tag } = req.query;
+
+    const cond = { isDeleted: false };
+
+    if (name) {
+      cond.name = { $regex: name, $options: "i" };
+    }
+
+    if (tag) {
+      cond.tag = { $in: Array.isArray(tag) ? tag : [tag] };
+    }
+
     let query = Product.find(cond);
     let response = { status: "success" };
 
@@ -64,8 +81,17 @@ productController.getProductById = async (req, res) => {
 productController.updateProducts = async (req, res) => {
   try {
     const productId = req.params.id;
-    const { sku, name, image, price, description, category, stock, status } =
-      req.body;
+    const {
+      sku,
+      name,
+      image,
+      price,
+      description,
+      category,
+      stock,
+      status,
+      tag,
+    } = req.body;
     const product = await Product.findByIdAndUpdate(
       productId,
       {
@@ -77,6 +103,7 @@ productController.updateProducts = async (req, res) => {
         category,
         stock,
         status,
+        tag,
       },
       { new: true }
     );
